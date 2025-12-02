@@ -626,6 +626,22 @@ client.on('message', async (message) => {
     await simulateTyping(chat, 2);
     
     try {
+        // Si es solo un saludo simple, NO enviar texto, solo imagen
+        if (detectedIntent === 'saludo' && conversationHistory.length === 0) {
+            // Primer contacto: Solo enviar imagen, sin texto
+            conversationManager.logMessage(userPhoneId, userName, message.body, true);
+            
+            // Enviar imagen de bienvenida inmediatamente
+            setTimeout(async () => {
+                if (global.imageHelper) {
+                    await global.imageHelper.sendImage(message.from, 'BIENVENIDA');
+                    console.log('📸 Imagen de bienvenida enviada (sin texto previo)');
+                }
+            }, 1500); // 1.5 segundos después del saludo
+            
+            return; // No enviar respuesta de texto
+        }
+        
         response = await lawyerPersonality.generateResponse(message.body, { 
             intent: detectedIntent,
             clientInfo: { name: userName, phone: userPhoneId },
@@ -639,8 +655,8 @@ client.on('message', async (message) => {
         conversationManager.logMessage(userPhoneId, process.env.DESPACHO_NOMBRE || 'JPS Despacho Jurídico', response, false);
         
         // Enviar imagen contextual según intención
-        if (detectedIntent === 'saludo') {
-            // SIEMPRE enviar imagen de bienvenida con SERVICIOS
+        if (detectedIntent === 'saludo' && conversationHistory.length > 0) {
+            // Si ya hay conversación previa, enviar imagen después del texto
             setTimeout(async () => {
                 if (global.imageHelper) {
                     await global.imageHelper.sendImage(message.from, 'BIENVENIDA');

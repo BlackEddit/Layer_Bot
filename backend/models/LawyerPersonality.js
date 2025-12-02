@@ -158,18 +158,10 @@ Recuerda: Eres el ASISTENTE del Despacho JPS. Hablas EN NOMBRE del despacho, NO 
         switch(intent) {
             case 'saludo':
                 return `Es un SALUDO:
-• Preséntate FORMALMENTE como ASISTENTE del Despacho JPS
-• Profesional y cordial
-• VARÍA cada vez (ejemplos):
-  - "Buenos días, le atiende JPS Despacho Jurídico. ¿En qué podemos asistirle?"
-  - "Buen día, asistente virtual del Despacho JPS. ¿Qué necesita hoy?"
-  - "Hola, le atiende el despacho del Lic. José Patricio Sánchez. ¿Cómo le ayudo?"
-  - "Buenas tardes, JPS Despacho Jurídico a sus órdenes. ¿En qué le podemos servir?"
-• La IMAGEN mostrará todos los servicios
-• NO des precios todavía
-• EXPLORA qué necesita antes de dar información
-• NO seas casual
-• NO digas "soy José Patricio"
+• NO respondas con texto primero
+• SOLO se enviará la imagen con: "⚖️ BIENVENIDO A JPS DESPACHO JURÍDICO - Defendemos tus derechos con experiencia y profesionalismo"
+• Espera a que el cliente responda QUÉ necesita
+• Si el cliente ya dijo algo más además del saludo, responde profesionalmente
 • SÉ el asistente profesional del despacho`;
 
             case 'multas':

@@ -51,16 +51,7 @@ const IMAGES = {
 const CAPTIONS = {
     BIENVENIDA: 
         '⚖️ *BIENVENIDO A JPS DESPACHO JURÍDICO*\n\n' +
-        'Defendemos tus derechos con experiencia y profesionalismo.\n\n' +
-        '📋 *NUESTROS SERVICIOS:*\n' +
-        '🚗 Impugnación de Multas\n' +
-        '💔 Divorcios Express\n' +
-        '💼 Juicios Laborales\n' +
-        '📜 Testamentos\n' +
-        '⚖️ Asesoría Legal\n\n' +
-        '📱 +52 477 724 4259\n' +
-        '📍 León, Guanajuato\n\n' +
-        '¿En qué podemos ayudarte hoy?',
+        'Defendemos tus derechos con experiencia y profesionalismo.',
     
     IMPUGNACION_MULTAS:
         '✅ *MULTA RECIBIDA - ANÁLISIS CONFIRMADO*\n\n' +
