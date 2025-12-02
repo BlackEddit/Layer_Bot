@@ -1,26 +1,69 @@
-# ⚖️ Bot WhatsApp - Despacho Jurídico Profesional
+# ⚖️ JPS Despacho Jurídico - Bot WhatsApp con IA
 
-Sistema de WhatsApp Bot con IA para despacho de abogados especializado en **IMPUGNACIÓN DE MULTAS**.
+Sistema completo de asistente virtual para despacho jurídico con inteligencia artificial, especializado en **impugnación de multas** y gestión automatizada de casos legales.
 
 ---
 
-## 🚀 Instalación Rápida
+## 🎯 Características Principales
+
+### 🤖 Asistente Virtual Inteligente
+- **IA Conversacional** con Groq (Llama 3.3 70B)
+- **Respuestas dinámicas** - Nunca repite el mismo mensaje
+- **Contexto inteligente** - Recuerda últimas 3 conversaciones
+- **Personalidad profesional** - Asistente del Despacho JPS
+
+### 📊 Analytics Avanzados
+- **Tracking completo** de todas las conversaciones
+- **Detección automática de intenciones** (multas, laborales, divorcios, etc.)
+- **Análisis de sentimiento** (positivo, neutral, negativo)
+- **Tasa de conversión** de consultas a casos
+- **Métricas en tiempo real**
+
+### ⚡ Automatización Profesional
+- **Anti-spam inteligente** - Solo responde mensajes relevantes
+- **Gestión de casos** - Crea consultas y casos automáticamente
+- **Recordatorios** - Alertas de audiencias y citas
+- **Recepción de archivos** - PDFs y fotos de multas
+- **Sistema de imágenes** - Presentación profesional automática
+
+---
+
+## 🚀 Instalación
+
+### 1️⃣ Clonar repositorio
 
 ```bash
-# 1. Clonar repositorio
-git clone [tu-repo]
-cd BotAbogado
+git clone https://github.com/BlackEddit/Layer_Bot.git
+cd Layer_Bot
+```
 
-# 2. Instalar dependencias
+### 2️⃣ Instalar dependencias
+
+```bash
 npm install
+```
 
-# 3. Configurar variables de entorno
-# Editar .env con tu API key de Groq
+### 3️⃣ Configurar variables de entorno
 
-# 4. Iniciar bot
+Crear archivo `.env` con:
+
+```env
+# API de Groq para IA del bot
+GROQ_API_KEY=tu_api_key_aqui
+
+# Número del dueño
+OWNER_PHONE=5214777244259
+
+# Información del Despacho
+DESPACHO_NOMBRE=JPS Despacho Jurídico Profesional
+DESPACHO_TELEFONO=+52 477 724 4259
+ABOGADO_TITULAR=Lic. José Patricio Sánchez
+```
+
+### 4️⃣ Iniciar bot
+
+```bash
 .\start-bot.ps1
-# O manualmente:
-npm run bot
 ```
 
 ---
@@ -37,71 +80,255 @@ npm run bot
 │   │   ├── LawyerPersonality.js # Personalidad IA (Groq)
 │   │   ├── CaseManager.js       # Gestión de casos/consultas
 │   │   ├── ConversationManager.js # Historial de chats
+│   │   ├── AdvancedConversationTracker.js # Analytics avanzados
 │   │   └── ReminderSystem.js    # Recordatorios de audiencias
 │   │
-│   ├── controllers/             # Lógica de procesamiento
-│   └── routes/                  # Rutas de API (opcional)
+│   ├── config/
+│   │   └── imageConfig.js       # Configuración de imágenes
+│   │
+│   └── helpers/
+│       └── ImageHelper.js       # Helper para enviar imágenes
 │
 ├── 💾 storage/
 │   ├── data/                    # Base de datos JSON
 │   │   ├── cases.json          # Casos y consultas
-│   │   └── conversations.json  # Historial de mensajes
+│   │   ├── conversations.json  # Historial de mensajes
+│   │   └── conversation_analytics.json # Analytics
 │   │
-│   ├── images/received/         # Archivos recibidos (PDFs, fotos de multas)
+│   ├── images/
+│   │   ├── marketing/          # Imágenes profesionales
+│   │   └── received/           # Archivos recibidos (PDFs, fotos de multas)
 │   └── reminders.json           # Recordatorios programados
 │
-├── 📦 node_modules/             # Dependencias
+├── 📄 .env                      # Variables de entorno (API keys)
 ├── 📄 package.json              # Configuración del proyecto
-├── 🔧 .env                      # Variables de entorno (API keys)
+├── 📄 COMO_FUNCIONA_TODO.md     # Documentación completa
 └── 🚀 start-bot.ps1             # Script de inicio
 ```
 
 ---
 
-## 🎯 Funcionalidades
+## 💬 Ejemplo de Conversación
 
-### 🤖 Bot de WhatsApp
-- ✅ **Personalidad IA profesional** con Groq (Llama 3.3)
-- ✅ **Impugnación de multas** - Servicio core ($2,500 MXN)
-- ✅ **Recepción de archivos** (PDFs, imágenes de multas)
-- ✅ **Anti-spam inteligente** - Solo responde mensajes relevantes
-- ✅ **Gestión de casos** - Consultas, audiencias, seguimiento
-- ✅ **Recordatorios automáticos** - Audiencias y citas
-- ✅ **Comandos de dueño** (!casos, !pendientes, !audiencias)
+```
+Cliente: "Hola"
 
-### ⚖️ Servicios Ofrecidos
-- 🎯 **Impugnación de Multas:** $2,500 MXN (Tránsito, Fiscal, Administrativa)
-- 💼 Consulta Legal: $1,200 MXN/hora
-- 💔 Divorcio Express: $12,000 MXN
-- 💔 Divorcio Contencioso: Desde $18,000 MXN
-- 📜 Testamento: $4,500 MXN
-- ⚖️ Demandas Civiles: Desde $15,000 MXN
-- 💼 Juicios Laborales: Desde $12,000 MXN
-- 🚨 Defensa Penal: Desde $25,000 MXN
+Bot: "Buenos días, le atiende JPS Despacho Jurídico. ¿En qué podemos ayudarle?"
+
+[2.5 segundos después envía imagen profesional:]
+
+⚖️ BIENVENIDO A JPS DESPACHO JURÍDICO
+
+Defendemos tus derechos con experiencia y profesionalismo.
+
+🎯 Especialidad: Impugnación de Multas
+📱 +52 477 724 4259
+📍 León, Guanajuato
+
+¿En qué podemos ayudarte?
+```
+
+```
+Cliente: "Tengo una multa de tránsito"
+
+Bot: "Entendido. Le puedo ayudar con la impugnación.
+
+⚖️ SERVICIO DE IMPUGNACIÓN:
+💰 Inversión: $2,500 MXN
+✅ Tasa de éxito: 97% (330 de 340 casos ganados)
+
+📋 NECESITO:
+• Foto de la multa
+• Licencia de conducir
+• Tarjeta de circulación
+
+¿Desea proceder con la impugnación?"
+```
 
 ---
 
-## 🔧 Configuración
+## 🎯 Funcionalidades Principales
 
-### Variables de Entorno (.env)
-```env
-# API de Groq para IA (OBLIGATORIO)
-GROQ_API_KEY=tu_api_key_de_groq
+### 🤖 Asistente Virtual con IA
+- ✅ **Personalidad profesional** - Asistente del Despacho JPS (no el abogado)
+- ✅ **Respuestas dinámicas** - Nunca repite el mismo saludo
+- ✅ **Contexto inteligente** - Recuerda últimas 3 conversaciones
+- ✅ **Detección de intenciones** - Multas, laborales, divorcios, etc.
 
-# Número del dueño del despacho
-OWNER_PHONE=5214777244259
+### 📊 Analytics Avanzados (NEW)
+- ✅ **Tracking completo** - Todas las conversaciones guardadas
+- ✅ **Análisis de sentimiento** - Positivo, neutral, negativo
+- ✅ **Detección de necesidades** - Legal needs identificadas
+- ✅ **Tasa de conversión** - De consulta a caso
+- ✅ **Métricas en tiempo real** - Reportes y estadísticas
 
-# Información del Despacho
-DESPACHO_NOMBRE=Despacho Jurídico Profesional
-DESPACHO_TELEFONO=+52 477 724 4259
-DESPACHO_DIRECCION=Av. Principal #123, Ciudad
+### 📸 Sistema de Imágenes
+- ✅ **Imagen de bienvenida** - Siempre se envía en saludos
+- ✅ **19 imágenes configurables** - Logos, servicios, casos éxito
+- ✅ **Timing inteligente** - 2.5s después del texto
+
+### 📁 Gestión de Archivos
+- ✅ **Recepción de PDFs** - Multas, documentos
+- ✅ **Análisis de imágenes** - Fotos de multas
+- ✅ **Almacenamiento organizado** - storage/images/received/
+
+### ⏰ Recordatorios
+- ✅ **Audiencias** - Alertas automáticas
+- ✅ **Citas** - Notificaciones programadas
+- ✅ **Seguimiento de casos** - Status updates
+
+### 🛡️ Anti-Spam
+- ✅ **Filtro inteligente** - Solo responde mensajes relevantes
+- ✅ **Previene bucles** - No responde a otros bots
+- ✅ **Validación de contexto** - Detecta intenciones reales
+
+
+---
+
+## 🔧 Comandos del Dueño
+
+Desde el número configurado como `OWNER_PHONE`:
+
+```
+!casos          # Ver estadísticas de casos
+!pendientes     # Consultas pendientes
+!audiencias     # Próximas audiencias
+!recordatorio   # Programar recordatorio
 ```
 
-### Obtener API Key de Groq (GRATIS)
-1. Ir a: https://console.groq.com/
-2. Crear cuenta gratuita
-3. Obtener API key
-4. Pegar en `.env`
+---
+
+## 📊 Sistema de Analytics
+
+El bot incluye **AdvancedConversationTracker** que guarda automáticamente:
+
+### Datos Capturados
+- ✅ Todas las conversaciones completas
+- ✅ Intenciones detectadas automáticamente
+- ✅ Análisis de sentimiento (positivo/neutral/negativo)
+- ✅ Necesidades legales identificadas
+- ✅ Tiempo de respuesta promedio
+- ✅ Tasa de conversión a casos
+- ✅ Métricas por usuario
+
+### Ver Estadísticas
+
+```javascript
+const tracker = new AdvancedConversationTracker();
+const stats = tracker.getStats();
+
+console.log(stats);
+// Output:
+// {
+//   total: 45,
+//   active: 12,
+//   converted: 8,
+//   conversionRate: 17.78,
+//   totalMessages: 234,
+//   commonIntents: [
+//     { intent: 'impugnacion_multa', count: 25 },
+//     { intent: 'consulta_precio', count: 18 }
+//   ],
+//   sentimentDistribution: {
+//     positive: 28,
+//     neutral: 15,
+//     negative: 2
+//   }
+// }
+```
+
+---
+
+## 🛠️ Tecnologías
+
+- **Node.js** v18+
+- **whatsapp-web.js** v1.25.0 - Cliente de WhatsApp
+- **Groq SDK** v0.3.3 - IA conversacional (Llama 3.3 70B)
+- **JSON** - Base de datos simple (migrable a PostgreSQL/MySQL)
+
+---
+
+## 📈 Mejores Prácticas Implementadas
+
+Basado en análisis de asistentes exitosos (Intercom, Drift, ChatGPT):
+
+1. **Timing Inteligente**
+   - Delays variables según contexto
+   - Primer mensaje: 3-8 segundos
+   - Conversación activa: 1-3 segundos
+
+2. **Contexto es Rey**
+   - Recuerda últimas 3 interacciones
+   - No pregunta lo que ya sabe
+   - Detecta cambios de tema
+
+3. **Personalización Dinámica**
+   - Saludos diferentes cada vez
+   - Tono adaptable al cliente
+   - Temperature 0.8 para variación natural
+
+4. **Multimedia Estratégico**
+   - Imagen solo cuando aporta valor
+   - Delay de 2.5s entre texto e imagen
+   - Caption profesional con información clave
+
+5. **Respuestas Cortas**
+   - Máximo 400 tokens (1-3 líneas)
+   - Directo al punto
+   - Sin discursos largos
+
+---
+
+## 🚧 Roadmap
+
+### Próximas Funcionalidades
+- [ ] Dashboard web para analytics
+- [ ] Integración con Google Calendar
+- [ ] Base de datos SQL (PostgreSQL)
+- [ ] Sistema de pagos integrado
+- [ ] Multi-idioma
+- [ ] Voice notes support
+
+---
+
+## 📝 Licencia
+
+MIT License
+
+---
+
+## 👤 Autor
+
+**JPS Despacho Jurídico Profesional**
+- 📱 WhatsApp: +52 477 724 4259
+- 📍 León, Guanajuato, México
+- ⚖️ Especialidad: Impugnación de Multas
+
+---
+
+## 🤝 Contribuir
+
+Las contribuciones son bienvenidas:
+
+1. Fork el proyecto
+2. Crea una rama (`git checkout -b feature/Nueva`)
+3. Commit (`git commit -m 'Agregar feature'`)
+4. Push (`git push origin feature/Nueva`)
+5. Pull Request
+
+---
+
+## 📚 Documentación
+
+- [📖 Cómo Funciona Todo](COMO_FUNCIONA_TODO.md) - Explicación completa del sistema
+- [📊 Analytics System](backend/models/AdvancedConversationTracker.js) - Sistema de tracking
+
+---
+
+**⭐ Si este proyecto te ayuda, dale una estrella en GitHub!**
+
+*Desarrollado con ❤️ para automatizar despachos jurídicos*
+
 
 ---
 
