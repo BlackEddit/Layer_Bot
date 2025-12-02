@@ -333,31 +333,32 @@ client.on('message', async (message) => {
                     `85% de mis casos se cancelan.\n\n` +
                     `- Lic. José Patricio`;
             } else if (message.type === 'image') {
-                fileResponse = `📸 *FOTO RECIBIDA*\n\n` +
-                    `✅ Ya la vi.\n\n` +
-                    `Reviso en 10 minutos y te digo exactamente qué procede.\n\n` +
-                    `Voy a verificar:\n` +
-                    `• Placa correcta\n` +
-                    `• Fecha y hora\n` +
-                    `• Firma del oficial\n` +
-                    `• Motivo claro\n\n` +
-                    `Impugnación: $2,500 MXN\n` +
-                    `Éxito: 85% canceladas\n\n` +
-                    `Espera mi mensaje.\n\n` +
-                    `- Lic. José Patricio`;
+                fileResponse = `📸 *FOTO DE MULTA RECIBIDA*\n\n` +
+                    `✅ El Lic. José Patricio la revisará.\n\n` +
+                    `💰 *INVERSIÓN:* $2,500 MXN\n` +
+                    `📊 *TASA DE ÉXITO:* 97% (330/340 ganados)\n` +
+                    `⏱️ *TIEMPO:* 4-6 meses\n\n` +
+                    `📋 *PARA INICIAR NECESITAS:*\n` +
+                    `1️⃣ Multa ORIGINAL en físico\n` +
+                    `2️⃣ Pago de $2,500 MXN\n` +
+                    `3️⃣ Copia de licencia + tarjeta circulación\n\n` +
+                    `📍 León, Guanajuato\n` +
+                    `📱 +52 477 724 4259\n\n` +
+                    `¿Deseas agendar cita para entregar?`;
                 
-                // 📸 ENVIAR IMAGEN DE EJEMPLO DE MULTA GANADA
-                // Esperar 3 segundos y enviar ejemplo de éxito
+                // 📸 ENVIAR IMAGEN CON PROCESO Y PRECIO
+                // 📸 ENVIAR IMAGEN CON PROCESO Y PRECIO
+                // Esperar 3 segundos y enviar imagen con información completa
                 setTimeout(async () => {
                     try {
                         if (global.imageHelper) {
-                            const sent = await global.imageHelper.sendSuccessExample(message.from);
+                            const sent = await global.imageHelper.sendFineImpugnation(message.from);
                             if (sent) {
-                                console.log('📸 Imagen de multa cancelada enviada');
+                                console.log('📸 Imagen de impugnación con precio enviada');
                             }
                         }
                     } catch (err) {
-                        console.error('❌ Error enviando imagen de ejemplo:', err);
+                        console.error('❌ Error enviando imagen de impugnación:', err);
                     }
                 }, 3000);
             }
@@ -639,26 +640,23 @@ client.on('message', async (message) => {
         
         // Enviar imagen contextual según intención
         if (detectedIntent === 'saludo') {
-            // SIEMPRE enviar imagen en saludos (denota profesionalismo)
+            // SIEMPRE enviar imagen de bienvenida con SERVICIOS
             setTimeout(async () => {
                 if (global.imageHelper) {
                     await global.imageHelper.sendImage(message.from, 'BIENVENIDA');
-                    console.log('📸 Imagen profesional enviada');
+                    console.log('📸 Imagen de servicios enviada');
                 }
             }, 2500); // 2.5 segundos después del texto
         } else if (detectedIntent === 'precios') {
+            // Solo si pregunta precios generales
             setTimeout(async () => {
                 if (global.imageHelper) {
                     await global.imageHelper.sendPricing(message.from);
                 }
             }, 2000);
-        } else if (detectedIntent === 'multas' && (messageText.includes('proceso') || conversationHistory.length === 0)) {
-            setTimeout(async () => {
-                if (global.imageHelper) {
-                    await global.imageHelper.sendFineImpugnation(message.from);
-                }
-            }, 2000);
         }
+        // NO enviar imagen de multas automáticamente
+        // Solo cuando cliente envíe FOTO de la multa
         
         return;
         

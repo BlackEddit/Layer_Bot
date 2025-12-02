@@ -52,21 +52,29 @@ const CAPTIONS = {
     BIENVENIDA: 
         '⚖️ *BIENVENIDO A JPS DESPACHO JURÍDICO*\n\n' +
         'Defendemos tus derechos con experiencia y profesionalismo.\n\n' +
-        '🎯 Especialidad: Impugnación de Multas\n' +
+        '📋 *NUESTROS SERVICIOS:*\n' +
+        '🚗 Impugnación de Multas\n' +
+        '💔 Divorcios Express\n' +
+        '💼 Juicios Laborales\n' +
+        '📜 Testamentos\n' +
+        '⚖️ Asesoría Legal\n\n' +
         '📱 +52 477 724 4259\n' +
         '📍 León, Guanajuato\n\n' +
-        '¿En qué podemos ayudarte?',
+        '¿En qué podemos ayudarte hoy?',
     
     IMPUGNACION_MULTAS:
-        '🚗 *IMPUGNACIÓN DE MULTAS*\n\n' +
-        '✅ Multas de Tránsito\n' +
-        '✅ Multas Fiscales\n' +
-        '✅ Multas Administrativas\n\n' +
-        '💰 Inversión: $50%\n' +
-        '📊 Éxito: 99% canceladas\n\n' +
-        '📸 Envía foto de tu multa\n' +
-        '⏱️ Análisis inmediato\n\n' +
-        '¡No pagues multas injustas!',
+        '✅ *MULTA RECIBIDA - ANÁLISIS CONFIRMADO*\n\n' +
+        'El Lic. José Patricio revisará tu caso.\n\n' +
+        '💰 *INVERSIÓN:* $2,500 MXN\n' +
+        '📊 *TASA DE ÉXITO:* 97% (330/340 casos ganados)\n' +
+        '⏱️ *PROCESO:* 4-6 meses\n\n' +
+        '📋 *PARA INICIAR NECESITAS:*\n' +
+        '1️⃣ Entregar multa ORIGINAL en físico\n' +
+        '2️⃣ Pago de $2,500 MXN\n' +
+        '3️⃣ Copia de licencia y tarjeta de circulación\n\n' +
+        '📍 *Ubicación:* León, Guanajuato\n' +
+        '📱 *Contacto:* +52 477 724 4259\n\n' +
+        '¿Deseas agendar cita para entregar documentos?',
     
     MULTA_CANCELADA:
         '✅ *ASÍ SE VE UNA MULTA CANCELADA*\n\n' +
@@ -78,7 +86,7 @@ const CAPTIONS = {
     
     ESTADISTICAS:
         '📊 *NUESTROS RESULTADOS 2024*\n\n' +
-        '✅ 573 Multas Impugnadas\n' +
+        '✅ 2573 Multas Impugnadas\n' +
         '🎯 99% Casos Ganados\n' +
         '💰 $384,000 MXN Ahorrados a Clientes\n\n' +
         'Los números no mienten.\n' +
