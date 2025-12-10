@@ -98,7 +98,6 @@ Especialidad: IMPUGNACIÓN DE MULTAS
 
 Otros servicios:
 • Laborales: Desde $12,000
-• Divorcios: Variable
 • Testamentos: $4,500
 • Consultas: $1,200/hora
 
@@ -179,7 +178,6 @@ Recuerda: Eres el ASISTENTE del Despacho JPS. Hablas EN NOMBRE del despacho, NO 
 • Pregunta QUÉ servicio específicamente
 • Multas: Solo di precio ($2,500) SI ya envió foto de la multa
 • Otros servicios: Da rango general y pide más detalles
-• Divorcios: Desde $12,000
 • Laborales: Desde $12,000
 • Testamentos: $4,500
 • NO des toda la tabla de precios, pregunta QUÉ necesita`;

@@ -183,18 +183,17 @@ Hola, soy el Lic. José Patricio Sánchez.
 
 🎯 *MI ESPECIALIDAD:*
 IMPUGNACIÓN DE MULTAS - $2,500 MXN
-85% de casos ganados
+97% de casos ganados
 
 📋 *OTROS SERVICIOS:*
-• Divorcios: Desde $12,000
 • Laborales: Desde $12,000
 • Testamentos: $4,500
 • Penales: Desde $25,000
 
 💬 *PREGÚNTAME:*
 "Tengo una multa" → Te digo qué hacer
-"¿Cuánto cuesta un divorcio?" → Te explico opciones
 "Mi patrón no me pagó" → Revisamos el caso
+"Necesito un testamento" → Te asesoro
 
 📸 *¿TIENES UNA MULTA?*
 Mándame foto de ambos lados.
@@ -264,7 +263,7 @@ function generateOwnerHelpMessage() {
 • \`!casos\` → Ver estadísticas completas
 • \`!pendientes\` → Ver consultas sin agendar
 • \`!audiencias\` → Ver próximas audiencias
-• \`!recordatorio 15/12/2024 10:00 Audiencia caso divorcio\` → Crear recordatorio
+• \`!recordatorio 15/12/2024 10:00 Audiencia caso multas\` → Crear recordatorio
 
 🎯 Solo tú puedes usar estos comandos
 ⚖️ ¡Tu bot está funcionando perfecto, jefe!`;
@@ -385,13 +384,13 @@ client.on('message', async (message) => {
         messageText.includes('transito') || messageText.includes('foto') ||
         // Otros servicios legales
         messageText.includes('abogado') || messageText.includes('legal') ||
-        messageText.includes('divorcio') || messageText.includes('testamento') ||
-        messageText.includes('demanda') || messageText.includes('laboral') ||
-        messageText.includes('penal') || messageText.includes('civil') ||
-        messageText.includes('consulta') || messageText.includes('cita') ||
-        messageText.includes('asesor') || messageText.includes('ayuda') ||
-        messageText.includes('precio') || messageText.includes('costo') ||
-        messageText.includes('cuanto') || messageText.includes('servicios') ||
+        messageText.includes('testamento') || messageText.includes('demanda') ||
+        messageText.includes('laboral') || messageText.includes('penal') ||
+        messageText.includes('civil') || messageText.includes('consulta') ||
+        messageText.includes('cita') || messageText.includes('asesor') ||
+        messageText.includes('ayuda') || messageText.includes('precio') ||
+        messageText.includes('costo') || messageText.includes('cuanto') ||
+        messageText.includes('servicios') ||
         // Saludos
         messageText.includes('hola') || messageText.includes('buenos') ||
         messageText.includes('que onda') || messageText.includes('qué onda') ||
@@ -565,9 +564,9 @@ client.on('message', async (message) => {
     // === DETECCIÓN DE INTENCIÓN LEGAL Y CREACIÓN DE CONSULTA ===
     else if (messageText.includes('cita') || messageText.includes('consulta') || 
              messageText.includes('asesor') || messageText.includes('necesito ayuda') ||
-             messageText.includes('divorcio') || messageText.includes('testamento') ||
-             messageText.includes('demanda') || messageText.includes('laboral') ||
-             messageText.includes('penal') || messageText.includes('urgente')) {
+             messageText.includes('testamento') || messageText.includes('demanda') ||
+             messageText.includes('laboral') || messageText.includes('penal') ||
+             messageText.includes('urgente')) {
         
         // Generar respuesta con IA
         const aiResponse = await lawyerPersonality.generateResponse(message.body, {
@@ -626,12 +625,16 @@ client.on('message', async (message) => {
     await simulateTyping(chat, 2);
     
     try {
-        // Si es solo un saludo simple, NO enviar texto, solo imagen
-        if (detectedIntent === 'saludo' && conversationHistory.length === 0) {
-            // Primer contacto: Solo enviar imagen, sin texto
+        // Si es solo un saludo simple (hola, buenos días, etc), NO enviar texto, solo imagen
+        const esSaludoSimple = (messageText.includes('hola') || messageText.includes('buenas') || 
+                                messageText.includes('buenos') || messageText.includes('buen día')) &&
+                               messageText.split(' ').length <= 3; // Máximo 3 palabras
+        
+        if (detectedIntent === 'saludo' && esSaludoSimple) {
+            // Solo enviar imagen, sin texto
             conversationManager.logMessage(userPhoneId, userName, message.body, true);
             
-            // Enviar imagen de bienvenida inmediatamente
+            // Enviar imagen de bienvenida
             setTimeout(async () => {
                 if (global.imageHelper) {
                     await global.imageHelper.sendImage(message.from, 'BIENVENIDA');
@@ -654,16 +657,8 @@ client.on('message', async (message) => {
         conversationManager.logMessage(userPhoneId, userName, message.body, true);
         conversationManager.logMessage(userPhoneId, process.env.DESPACHO_NOMBRE || 'JPS Despacho Jurídico', response, false);
         
-        // Enviar imagen contextual según intención
-        if (detectedIntent === 'saludo' && conversationHistory.length > 0) {
-            // Si ya hay conversación previa, enviar imagen después del texto
-            setTimeout(async () => {
-                if (global.imageHelper) {
-                    await global.imageHelper.sendImage(message.from, 'BIENVENIDA');
-                    console.log('📸 Imagen de servicios enviada');
-                }
-            }, 2500); // 2.5 segundos después del texto
-        } else if (detectedIntent === 'precios') {
+        // Enviar imagen contextual según intención (solo si NO es saludo simple)
+        if (detectedIntent === 'precios') {
             // Solo si pregunta precios generales
             setTimeout(async () => {
                 if (global.imageHelper) {

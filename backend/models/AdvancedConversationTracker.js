@@ -142,7 +142,6 @@ class AdvancedConversationTracker {
         if (lower.includes('multa') || lower.includes('infracción')) return 'impugnacion_multa';
         if (lower.includes('precio') || lower.includes('costo')) return 'consulta_precio';
         if (lower.includes('laboral') || lower.includes('despido')) return 'laboral';
-        if (lower.includes('divorcio') || lower.includes('pension')) return 'familiar';
         if (lower.includes('testamento') || lower.includes('herencia')) return 'testamentos';
         if (lower.includes('gracias')) return 'despedida';
         if (lower.includes('cuánto tarda') || lower.includes('tiempo')) return 'consulta_tiempo';
@@ -176,7 +175,6 @@ class AdvancedConversationTracker {
         
         if (lower.includes('multa')) needs.push('impugnacion_multa');
         if (lower.includes('laboral') || lower.includes('despido')) needs.push('laboral');
-        if (lower.includes('divorcio')) needs.push('divorcio');
         if (lower.includes('testamento')) needs.push('testamento');
         if (lower.includes('urgente')) needs.push('urgencia');
         if (lower.includes('consulta')) needs.push('consulta_legal');

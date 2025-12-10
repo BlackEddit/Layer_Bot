@@ -28,7 +28,6 @@ const IMAGES = {
     // ⚖️ SERVICIOS LEGALES
     // ==========================================
     IMPUGNACION_MULTAS: path.join(__dirname, '../../storage/images/marketing/servicios/impugnacion_multas.jpg'),
-    DIVORCIOS: path.join(__dirname, '../../storage/images/marketing/servicios/divorcios.jpg'),
     TESTAMENTOS: path.join(__dirname, '../../storage/images/marketing/servicios/testamentos.jpg'),
     LABORALES: path.join(__dirname, '../../storage/images/marketing/servicios/juicios_laborales.jpg'),
     PENAL: path.join(__dirname, '../../storage/images/marketing/servicios/defensa_penal.jpg'),
@@ -128,10 +127,6 @@ const KEYWORD_IMAGE_MAP = {
     infraccion: 'IMPUGNACION_MULTAS',
     transito: 'IMPUGNACION_MULTAS',
     fotomulta: 'IMPUGNACION_MULTAS',
-    
-    divorcio: 'DIVORCIOS',
-    separacion: 'DIVORCIOS',
-    matrimonio: 'DIVORCIOS',
     
     testamento: 'TESTAMENTOS',
     herencia: 'TESTAMENTOS',
