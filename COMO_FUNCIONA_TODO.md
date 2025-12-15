@@ -45,7 +45,8 @@ BotAbogado/
 │   │   │                               • Usa Groq (Llama 3.3 70B)
 │   │   │                               • Genera respuestas únicas
 │   │   │                               • Temp: 0.8 (creatividad)
-│   │   │                               • Max tokens: 400 (corto)
+│   │   │                               • 
+
 │   │   │                               • Prompt de 150 líneas
 │   │   │
 │   │   ├── CaseManager.js           ← 📋 GESTOR DE CASOS
