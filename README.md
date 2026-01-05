@@ -6,6 +6,13 @@ Sistema completo de asistente virtual para despacho jurídico con inteligencia a
 
 ## 🎯 Características Principales
 
+### 🔍 Análisis Automático de Multas (NUEVO)
+- **Google Vision OCR** - Extracción automática de datos de fotos
+- **12 campos detectados** - Nombre, folio, placas, oficial, etc.
+- **95% de precisión** - OCR de alta calidad
+- **1,000 análisis gratis/mes** - Sin costo hasta 1,000 imágenes
+- **Análisis en tiempo real** - Respuesta en segundos
+
 ### 🤖 Asistente Virtual Inteligente
 - **IA Conversacional** con Groq (Llama 3.3 70B)
 - **Respuestas dinámicas** - Nunca repite el mismo mensaje

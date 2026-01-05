@@ -45,9 +45,12 @@ build/
 # Archivos de datos sensibles
 storage/reminders.json
 storage/conversations.json
+storage/images/received/
+storage/images/products/
 backend/models/data/
 
 # Google Cloud credentials
+config/
 *.json
 service-account*.json
 google-credentials*.json

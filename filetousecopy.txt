@@ -1,0 +1,12 @@
+ Nombre del infraccionado
+ Folio
+ Fecha de la infracción
+ Placas del carro
+ Marca
+ Línea
+ Nombre del Policía Vial
+ Número de identificación
+ Delegación
+ Turno
+ Sector
+ Y fecha en que se conoce la multa
