@@ -116,6 +116,13 @@ class ImageHelper {
     }
 
     /**
+     * Envía imagen de ejemplo de multa con instrucciones de qué campos deben ser visibles
+     */
+    async sendFineExample(recipient) {
+        return await this.sendImage(recipient, 'EJEMPLO_MULTA');
+    }
+
+    /**
      * Envía múltiples imágenes con delay
      * @param {string} recipient - Número de WhatsApp
      * @param {Array<string>} imageKeys - Array de claves de imágenes

@@ -41,6 +41,11 @@ const IMAGES = {
     TESTIMONIO_1: path.join(__dirname, '../../storage/images/marketing/casos_exito/testimonio_1.jpg'),
     TESTIMONIO_2: path.join(__dirname, '../../storage/images/marketing/casos_exito/testimonio_2.jpg'),
     ANTES_DESPUES: path.join(__dirname, '../../storage/images/marketing/casos_exito/antes_despues.jpg'),
+    
+    // ==========================================
+    // 📸 EJEMPLOS Y GUÍAS PARA EL CLIENTE
+    // ==========================================
+    EJEMPLO_MULTA: path.join(__dirname, '../../storage/images/products/impugnacion_multas/Ejemplo Caricatura Multa.png'),
 };
 
 /**
@@ -50,11 +55,12 @@ const IMAGES = {
 const CAPTIONS = {
     BIENVENIDA: 
         '⚖️ *BIENVENIDO A JPS DESPACHO JURÍDICO*\n\n' +
-        'Defendemos tus derechos con experiencia y profesionalismo.',
+        'Soy el asistente virtual. En la siguiente imagen te presento nuestros servicios.\n\n' +
+        '¿En qué tema legal te puedo ayudar?',
     
     IMPUGNACION_MULTAS:
         '✅ *MULTA RECIBIDA - ANÁLISIS CONFIRMADO*\n\n' +
-        'El Lic. José Patricio revisará tu caso.\n\n' +
+        'Nuestro equipo legal revisará tu caso.\n\n' +
         '💰 *INVERSIÓN:* $2,500 MXN\n' +
         '📊 *TASA DE ÉXITO:* 97% (330/340 casos ganados)\n' +
         '⏱️ *PROCESO:* 4-6 meses\n\n' +
@@ -84,7 +90,6 @@ const CAPTIONS = {
     
     CONTACTO:
         '📱 *CONTACTO JPS DESPACHO JURÍDICO*\n\n' +
-        '👨‍⚖️ Lic. José Patricio Sánchez\n' +
         '📞 +52 477 724 4259\n' +
         '📍 León, Guanajuato\n' +
         '⏰ Lun-Vie: 9:00 - 18:00\n' +
@@ -116,6 +121,11 @@ const CAPTIONS = {
         '• Registro público\n\n' +
         '⏱️ Listo en 2 semanas\n\n' +
         'Protege a tu familia hoy.',
+    
+    EJEMPLO_MULTA:
+        '📸 *EJEMPLO DE MULTA*\n\n' +
+        'Por favor envíame una foto de tu multa donde se vean claramente los campos marcados en verde.\n\n' +
+        '✅ Asegúrate de que tenga buena iluminación y se lean todos los datos.',
 };
 
 /**

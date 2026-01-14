@@ -11,6 +11,9 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# Configuración local (modo pruebas)
+.config.local
+
 # Archivos de log
 *_log
 *.log

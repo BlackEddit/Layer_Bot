@@ -1,0 +1,51 @@
+# Sistema de configuración local
+# Este archivo NO se sube a GitHub (.gitignore)
+
+# ═══════════════════════════════════════════════════════════════
+# MODO PRUEBAS
+# ═══════════════════════════════════════════════════════════════
+# Cuando está activado, el bot SOLO responde a los números permitidos
+# Útil para probar sin que clientes reales reciban mensajes
+
+TEST_MODE=false
+
+# ═══════════════════════════════════════════════════════════════
+# NÚMEROS PERMITIDOS (sin espacios, sin + ni @c.us)
+# ═══════════════════════════════════════════════════════════════
+# Formato: ALLOWED_NUMBERS=5214771234567,5214779876543,5211234567890
+# Separa múltiples números con comas
+
+ALLOWED_NUMBERS=5214777244259
+
+# ═══════════════════════════════════════════════════════════════
+# INSTRUCCIONES
+# ═══════════════════════════════════════════════════════════════
+
+# 1. Para ACTIVAR modo pruebas:
+#    TEST_MODE=true
+
+# 2. Para DESACTIVAR modo pruebas (producción):
+#    TEST_MODE=false
+
+# 3. Para agregar más números:
+#    ALLOWED_NUMBERS=numero1,numero2,numero3
+
+# 4. IMPORTANTE: 
+#    - NO uses espacios
+#    - NO agregues el símbolo +
+#    - NO agregues @c.us
+#    - Formato: país + área + número
+#    - Ejemplo México: 5214771234567 (52 + 477 + 1234567)
+
+# ═══════════════════════════════════════════════════════════════
+# EJEMPLOS
+# ═══════════════════════════════════════════════════════════════
+
+# Probar con 1 número:
+# ALLOWED_NUMBERS=5214777244259
+
+# Probar con 3 números:
+# ALLOWED_NUMBERS=5214777244259,5214779876543,5211234567890
+
+# Probar solo con tu número y el de un amigo:
+# ALLOWED_NUMBERS=5214777244259,5214771112222

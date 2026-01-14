@@ -6,7 +6,14 @@ Sistema completo de asistente virtual para despacho jurídico con inteligencia a
 
 ## 🎯 Características Principales
 
-### 🔍 Análisis Automático de Multas (NUEVO)
+### 🛡️ Sistema de Seguridad Anti-Extorsión (NUEVO)
+- **Identificación automática** - Se presenta como bot automatizado
+- **Detección de fraudes** - Analiza palabras clave de extorsión
+- **Bloqueo automático** - 3 strikes y número bloqueado
+- **Notificaciones al dueño** - Alertas en tiempo real
+- **Comandos de gestión** - Bloquear/desbloquear manualmente
+
+### 🔍 Análisis Automático de Multas
 - **Google Vision OCR** - Extracción automática de datos de fotos
 - **12 campos detectados** - Nombre, folio, placas, oficial, etc.
 - **95% de precisión** - OCR de alta calidad

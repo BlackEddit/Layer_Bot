@@ -184,7 +184,7 @@ IMPORTANTE: Responde SOLO el JSON, sin texto adicional.`
             resumen += `⚠️ *ATENCIÓN:* Faltan datos en la multa. Esto puede facilitar la impugnación.\n\n`;
         }
         
-        resumen += `✅ *El Lic. José Patricio revisará tu caso*\n\n`;
+        resumen += `✅ *Nuestro equipo legal revisará tu caso*\n\n`;
         resumen += `💰 *Inversión impugnación:* $2,500 MXN\n`;
         resumen += `📊 *Tasa de éxito:* 97% (330/340 ganados)\n\n`;
         resumen += `¿Deseas proceder con la impugnación?`;

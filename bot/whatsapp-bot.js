@@ -27,6 +27,9 @@ const CaseManager = require('../backend/models/CaseManager');
 const ReminderSystem = require('../backend/models/ReminderSystem');
 const ImageHelper = require('../backend/helpers/ImageHelper');
 const GoogleVisionMultaAnalyzer = require('../backend/models/GoogleVisionMultaAnalyzer');
+const SecuritySystem = require('../backend/models/SecuritySystem');
+const LegalDocumentGenerator = require('../backend/models/LegalDocumentGenerator');
+const { MessageMedia } = require('whatsapp-web.js');
 
 console.log('⚖️ Bot JPS DESPACHO JURÍDICO - Iniciando...');
 
@@ -39,6 +42,8 @@ const conversationManager = new ConversationManager();
 const caseManager = new CaseManager();
 const reminderSystem = new ReminderSystem();
 const multaAnalyzer = new GoogleVisionMultaAnalyzer();
+const securitySystem = new SecuritySystem();
+const documentGenerator = new LegalDocumentGenerator();
 let imageHelper = null;
 
 console.log('✅ Sistemas inicializados');
@@ -95,6 +100,11 @@ function getOwnerHelp() {
 • \`!pendientes\` - Consultas sin atender
 • \`!audiencias\` - Próximas audiencias
 
+🛡️ *SEGURIDAD:*
+• \`!seguridad\` - Ver reporte de seguridad
+• \`!bloquear [número]\` - Bloquear número
+• \`!desbloquear [número]\` - Desbloquear número
+
 🎯 Solo tú puedes usar estos comandos`;
 }
 
@@ -124,7 +134,6 @@ client.on('ready', async () => {
     
     // Cargar recordatorios
     reminderSystem.loadReminders();
-    reminderSystem.startChecking();
     
     // Enviar mensaje de presentación al dueño
     try {
@@ -201,6 +210,21 @@ client.on('message', async (message) => {
     console.log(`👤 De: ${message.from}`);
     
     // ───────────────────────────────────────────────────────────
+    // 🛡️ SISTEMA DE SEGURIDAD
+    // ───────────────────────────────────────────────────────────
+    
+    // 1. Verificar si debe responder (bloqueos + modo pruebas)
+    if (!securitySystem.shouldRespond(message.from)) {
+        if (securitySystem.isBlocked(message.from)) {
+            console.log(`🚫 Número bloqueado: ${message.from}`);
+        } else {
+            console.log(`🧪 Modo pruebas activo - Número no autorizado: ${message.from}`);
+        }
+        return; // No responder
+    }
+    
+    // 2. PRIORIDAD: Procesar imágenes/archivos ANTES de cualquier otra cosa
+    // ───────────────────────────────────────────────────────────
     // MANEJO DE ARCHIVOS (PDFs, Imágenes de multas)
     // ───────────────────────────────────────────────────────────
     
@@ -242,10 +266,71 @@ client.on('message', async (message) => {
                     // Usar el mensaje formateado del analizador
                     fileResponse = resultadoAnalisis.mensaje;
                     
+                    // GENERAR DOCUMENTO LEGAL
+                    try {
+                        console.log('📄 Generando documento de demanda...');
+                        const nombreInfractor = resultadoAnalisis.datos.nombreInfractor || 'INFRACTOR NO ESPECIFICADO';
+                        const documentPath = await documentGenerator.generarDemanda(
+                            resultadoAnalisis.datos,
+                            nombreInfractor
+                        );
+                        
+                        // Enviar documento a los números específicos
+                        const numerosDestino = [
+                            '5214777244259@c.us', // Número del dueño
+                            '5214773241596@c.us'  // Número para asuntos legales
+                        ];
+                        
+                        for (const numeroDestino of numerosDestino) {
+                            try {
+                                const media = MessageMedia.fromFilePath(documentPath);
+                                
+                                // Mensaje que acompaña el documento
+                                const mensajeDoc = `📋 *DEMANDA GENERADA*\n\n` +
+                                    `👤 *Destinatario:* ${numeroDestino.replace('@c.us', '')}\n` +
+                                    `📝 *Infraccionado:* ${nombreInfractor}\n` +
+                                    `📑 *Folio:* ${resultadoAnalisis.datos.folio || 'No especificado'}\n` +
+                                    `📅 *Fecha infracción:* ${resultadoAnalisis.datos.fechaInfraccion || 'No especificado'}\n` +
+                                    `🚗 *Placas:* ${resultadoAnalisis.datos.placas || 'No especificado'}\n\n` +
+                                    `⚠️ *IMPORTANTE:* Aún no se ha realizado el pago de $2,500 MXN`;
+                                
+                                await client.sendMessage(numeroDestino, media, { caption: mensajeDoc });
+                                console.log(`📤 Documento enviado a: ${numeroDestino}`);
+                            } catch (errorEnvio) {
+                                console.error(`❌ Error enviando documento a ${numeroDestino}:`, errorEnvio);
+                            }
+                        }
+                        
+                        // SOLICITAR PAGO AL NÚMERO LEGAL (477 324 1596)
+                        setTimeout(async () => {
+                            try {
+                                const numeroLegal = '5214773241596@c.us';
+                                const mensajePago = `💰 *SOLICITUD DE PAGO*\n\n` +
+                                    `Lic. Patricio, le solicito amablemente gestione el cobro de:\n\n` +
+                                    `👤 *Cliente:* ${nombreInfractor}\n` +
+                                    `📑 *Folio multa:* ${resultadoAnalisis.datos.folio || 'No especificado'}\n` +
+                                    `💵 *Monto:* $2,500 MXN\n\n` +
+                                    `*Métodos de pago disponibles:*\n` +
+                                    `• 💳 Mercado Pago\n` +
+                                    `• 🏦 Transferencia bancaria\n` +
+                                    `• 💵 Efectivo\n\n` +
+                                    `Una vez recibido el pago, confirme para proceder con la impugnación.`;
+                                
+                                await client.sendMessage(numeroLegal, mensajePago);
+                                console.log('💰 Solicitud de pago enviada al licenciado');
+                            } catch (errorPago) {
+                                console.error('❌ Error enviando solicitud de pago:', errorPago);
+                            }
+                        }, 2000);
+                        
+                    } catch (errorDoc) {
+                        console.error('❌ Error generando/enviando documento:', errorDoc);
+                    }
+                    
                 } else {
                     // Si falla el análisis, usar respuesta genérica
                     fileResponse = `📸 *FOTO DE MULTA RECIBIDA*\n\n` +
-                        `✅ El Lic. José Patricio la revisará.\n\n` +
+                        `✅ Nuestro equipo legal la revisará.\n\n` +
                         `💰 *INVERSIÓN:* $2,500 MXN\n` +
                         `📊 *TASA DE ÉXITO:* 97% (330/340 ganados)\n` +
                         `⏱️ *TIEMPO:* 4-6 meses\n\n` +
@@ -284,6 +369,36 @@ client.on('message', async (message) => {
         }
     }
     
+    // 3. Detectar intentos de extorsión (solo para mensajes de texto)
+    if (message.body) {
+        const extorsionCheck = securitySystem.detectExtorsion(message.body);
+        
+        if (extorsionCheck.isExtorsion) {
+            console.log(`🚨 ALERTA: Posible extorsión detectada de ${message.from}`);
+            console.log(`   Palabras clave: ${extorsionCheck.keywords.join(', ')}`);
+            
+            // Marcar como sospechoso
+            const suspiciousResult = securitySystem.markSuspicious(message.from);
+            
+            // Enviar advertencia
+            await message.reply(securitySystem.getWarningMessage(extorsionCheck.severity));
+            
+            // Notificar al dueño
+            const ownerNumber = process.env.OWNER_PHONE + '@c.us';
+            await client.sendMessage(ownerNumber, 
+                `🚨 *ALERTA DE SEGURIDAD*\n\n` +
+                `Posible intento de extorsión detectado:\n\n` +
+                `📱 Número: ${message.from}\n` +
+                `📝 Mensaje: "${message.body.substring(0, 200)}..."\n` +
+                `⚠️ Palabras clave: ${extorsionCheck.keywords.join(', ')}\n` +
+                `🔢 Intentos: ${suspiciousResult.count}/3\n` +
+                `${suspiciousResult.blocked ? '🚫 Número BLOQUEADO automáticamente' : '⚠️ Marcado como sospechoso'}`
+            );
+            
+            return; // No continuar con conversación normal
+        }
+    }
+    
     // ───────────────────────────────────────────────────────────
     // OBTENER DATOS DEL USUARIO Y MENSAJE
     // ───────────────────────────────────────────────────────────
@@ -296,6 +411,23 @@ client.on('message', async (message) => {
     // Obtener historial de conversación
     const conversationHistory = await conversationManager.getConversationHistory(userPhoneId);
     conversationManager.logMessage(userPhoneId, userName, message.body, true);
+    
+    // 4. Mensaje automático de identificación (primera vez que escriben)
+    const isFirstContact = securitySystem.isFirstContact(message.from, conversationHistory);
+    
+    if (isFirstContact) {
+        console.log(`👋 Primer contacto de: ${message.from}`);
+        
+        // Solo enviar imagen con caption (sin mensaje de texto adicional)
+        setTimeout(async () => {
+            if (global.imageHelper) {
+                await global.imageHelper.sendImage(message.from, 'BIENVENIDA');
+                console.log('📸 Imagen de bienvenida enviada');
+            }
+        }, 1500);
+        
+        return; // No continuar procesando, ya respondimos
+    }
     
     // ───────────────────────────────────────────────────────────
     // SISTEMA DE DELAYS NATURALES (parecer humano)
@@ -394,6 +526,58 @@ client.on('message', async (message) => {
             console.log('📅 Audiencias enviadas');
             return;
         }
+        
+        // !seguridad - Ver reporte de seguridad
+        if (messageText === '!seguridad' || messageText === '!security') {
+            const report = securitySystem.getSecurityReport();
+            let securityMessage = `🛡️ *REPORTE DE SEGURIDAD*\n\n`;
+            
+            // Modo pruebas
+            if (securitySystem.testMode) {
+                securityMessage += `🧪 *MODO PRUEBAS: ACTIVO*\n`;
+                securityMessage += `✅ Números permitidos: ${securitySystem.allowedNumbers.size}\n\n`;
+            } else {
+                securityMessage += `🌐 *MODO: PRODUCCIÓN*\n`;
+                securityMessage += `✅ Respondiendo a todos los números\n\n`;
+            }
+            
+            securityMessage += `🚫 Números bloqueados: ${report.blockedCount}\n`;
+            securityMessage += `⚠️ Números sospechosos: ${report.suspiciousCount}\n\n`;
+            
+            if (report.blockedNumbers.length > 0) {
+                securityMessage += `📋 *BLOQUEADOS:*\n`;
+                report.blockedNumbers.slice(0, 5).forEach(num => {
+                    securityMessage += `  • ${num}\n`;
+                });
+                if (report.blockedNumbers.length > 5) {
+                    securityMessage += `  ... y ${report.blockedNumbers.length - 5} más\n`;
+                }
+            }
+            
+            await message.reply(securityMessage);
+            console.log('🛡️ Reporte de seguridad enviado');
+            return;
+        }
+        
+        // !bloquear [número] - Bloquear número manualmente
+        if (messageText.startsWith('!bloquear ')) {
+            const numberToBlock = messageText.replace('!bloquear ', '').trim();
+            securitySystem.blockNumber(numberToBlock + '@c.us', 'Bloqueado por dueño');
+            await message.reply(`🚫 Número bloqueado: ${numberToBlock}`);
+            return;
+        }
+        
+        // !desbloquear [número] - Desbloquear número
+        if (messageText.startsWith('!desbloquear ')) {
+            const numberToUnblock = messageText.replace('!desbloquear ', '').trim() + '@c.us';
+            const wasBlocked = securitySystem.unblockNumber(numberToUnblock);
+            if (wasBlocked) {
+                await message.reply(`✅ Número desbloqueado`);
+            } else {
+                await message.reply(`❌ Ese número no estaba bloqueado`);
+            }
+            return;
+        }
     }
     
     // ───────────────────────────────────────────────────────────
@@ -401,18 +585,24 @@ client.on('message', async (message) => {
     // ───────────────────────────────────────────────────────────
     
     const isRelevantMessage = 
+        // Opciones del menú (01, 02, 03, 04 o 1, 2, 3, 4)
+        /^0?[1-4]$/.test(messageText.trim()) ||
         // Multas
         messageText.includes('multa') || messageText.includes('infracción') ||
         messageText.includes('tránsito') || messageText.includes('transito') ||
+        messageText.includes('impugnación') || messageText.includes('impugnacion') ||
         // Servicios legales
         messageText.includes('abogado') || messageText.includes('legal') ||
         messageText.includes('testamento') || messageText.includes('demanda') ||
         messageText.includes('laboral') || messageText.includes('penal') ||
         messageText.includes('consulta') || messageText.includes('cita') ||
         messageText.includes('precio') || messageText.includes('costo') ||
+        messageText.includes('familiar') || messageText.includes('familia') ||
+        messageText.includes('contrato') || messageText.includes('civil') ||
         // Saludos
         messageText.includes('hola') || messageText.includes('buenos') ||
         messageText.includes('buenas') || messageText.includes('buen') ||
+        messageText.includes('hi') || messageText.includes('hey') ||
         // Urgencias
         messageText.includes('urgente') || messageText.includes('ayuda');
     
@@ -427,7 +617,18 @@ client.on('message', async (message) => {
     
     let detectedIntent = 'general';
     
-    if (messageText.includes('hola') || messageText.includes('buenas') || messageText.includes('buenos')) {
+    // Detectar selección de opciones del menú (01, 02, 03, 04 o simplemente 1, 2, 3, 4)
+    const menuOption = messageText.trim();
+    if (menuOption === '01' || menuOption === '1' || messageText.includes('impugnación') || messageText.includes('impugnacion')) {
+        detectedIntent = 'multas';
+    } else if (menuOption === '02' || menuOption === '2' || messageText.includes('laboral')) {
+        detectedIntent = 'derecho_laboral';
+    } else if (menuOption === '03' || menuOption === '3' || messageText.includes('familiar') || messageText.includes('familia')) {
+        detectedIntent = 'asuntos_familiares';
+    } else if (menuOption === '04' || menuOption === '4' || messageText.includes('contrato') || messageText.includes('civil')) {
+        detectedIntent = 'contratos_civiles';
+    } else if (messageText.includes('hola') || messageText.includes('buenas') || messageText.includes('buenos') ||
+        messageText.includes('hi') || messageText.includes('hey')) {
         detectedIntent = 'saludo';
     } else if (messageText.includes('multa') || messageText.includes('infracción') || messageText.includes('tránsito')) {
         detectedIntent = 'multas';
@@ -446,11 +647,12 @@ client.on('message', async (message) => {
     try {
         // CASO ESPECIAL: Saludo simple sin más palabras
         const esSaludoSimple = (messageText.includes('hola') || messageText.includes('buenas') || 
-                                messageText.includes('buenos') || messageText.includes('buen día')) &&
+                                messageText.includes('buenos') || messageText.includes('buen día') ||
+                                messageText.includes('hi') || messageText.includes('hey')) &&
                                messageText.split(' ').length <= 3;
         
         if (detectedIntent === 'saludo' && esSaludoSimple) {
-            // SOLO ENVIAR IMAGEN, SIN TEXTO
+            // SOLO ENVIAR IMAGEN DE BIENVENIDA (sin texto)
             console.log('👋 Saludo simple detectado - Enviando solo imagen');
             
             setTimeout(async () => {
@@ -460,7 +662,124 @@ client.on('message', async (message) => {
                 }
             }, 1500);
             
-            return; // No enviar texto
+            return;
+        }
+        
+        // CASO ESPECIAL: Usuario seleccionó OPCIÓN 01 - IMPUGNACIÓN DE FOTOMULTAS
+        if (menuOption === '01' || menuOption === '1' || messageText === 'fotomulta' || messageText === 'fotomultas') {
+            console.log('📸 Opción 01: FOTOMULTAS - Enviando respuesta específica');
+            
+            const respuestaFotomultas = `📸 *IMPUGNACIÓN DE FOTOMULTAS*\n\n` +
+                `✅ *¿CÓMO FUNCIONA?*\n` +
+                `1️⃣ Envías foto de ambos lados de tu fotomulta\n` +
+                `2️⃣ La analizamos con Google Vision AI\n` +
+                `3️⃣ Generamos demanda contencioso administrativa\n` +
+                `4️⃣ La presentamos ante el Juez Administrativo\n\n` +
+                `💰 *INVERSIÓN:* $2,500 MXN\n` +
+                `📊 *TASA DE ÉXITO:* 97% (330/340 casos ganados)\n` +
+                `⏱️ *TIEMPO PROMEDIO:* 4-6 meses\n\n` +
+                `📋 *REQUISITOS PARA INICIAR:*\n` +
+                `• Fotomulta ORIGINAL en físico\n` +
+                `• Pago de $2,500 MXN\n` +
+                `• Copia de licencia de conducir\n` +
+                `• Tarjeta de circulación\n\n` +
+                `📸 *¡ENVÍA TU FOTOMULTA AHORA!*\n` +
+                `Por favor envíame una foto donde se vean claramente los campos marcados en verde.`;
+            
+            await simulateTyping(chat, 2);
+            await message.reply(respuestaFotomultas);
+            conversationManager.logMessage(userPhoneId, despachoNombre, respuestaFotomultas, false);
+            
+            // Enviar imagen ejemplo de fotomulta
+            setTimeout(async () => {
+                if (global.imageHelper) {
+                    await global.imageHelper.sendFineExample(message.from);
+                    console.log('📸 Imagen ejemplo de fotomulta enviada');
+                }
+            }, 2000);
+            
+            return;
+        }
+        
+        // CASO ESPECIAL: Usuario seleccionó OPCIÓN 02 - DERECHO LABORAL
+        if (menuOption === '02' || menuOption === '2' || detectedIntent === 'derecho_laboral') {
+            console.log('💼 Opción 02: DERECHO LABORAL - Enviando respuesta específica');
+            
+            const respuestaLaboral = `💼 *DERECHO LABORAL*\n\n` +
+                `Te ayudamos con:\n\n` +
+                `📋 *SERVICIOS:*\n` +
+                `• Despidos injustificados\n` +
+                `• Reclamación de prestaciones\n` +
+                `• Liquidaciones y finiquitos\n` +
+                `• Demandas laborales\n` +
+                `• Riesgos de trabajo\n` +
+                `• Asesoría en contratos\n\n` +
+                `💰 *INVERSIÓN:*\n` +
+                `Consulta inicial: GRATIS\n` +
+                `Honorarios: Según el caso\n\n` +
+                `📍 *¿Quieres agendar una cita?*\n` +
+                `Escribe "CITA" o llámanos al:\n` +
+                `📱 +52 477 724 4259`;
+            
+            await simulateTyping(chat, 2);
+            await message.reply(respuestaLaboral);
+            conversationManager.logMessage(userPhoneId, despachoNombre, respuestaLaboral, false);
+            
+            return;
+        }
+        
+        // CASO ESPECIAL: Usuario seleccionó OPCIÓN 03 - ASUNTOS FAMILIARES
+        if (menuOption === '03' || menuOption === '3' || detectedIntent === 'asuntos_familiares') {
+            console.log('👨‍👩‍👧‍👦 Opción 03: ASUNTOS FAMILIARES - Enviando respuesta específica');
+            
+            const respuestaFamiliar = `👨‍👩‍👧‍👦 *ASUNTOS FAMILIARES*\n\n` +
+                `Te ayudamos con:\n\n` +
+                `📋 *SERVICIOS:*\n` +
+                `• Divorcios (necesario y voluntario)\n` +
+                `• Pensión alimenticia\n` +
+                `• Custodia de menores\n` +
+                `• Régimen de visitas\n` +
+                `• Testamentos\n` +
+                `• Adopciones\n\n` +
+                `💰 *INVERSIÓN:*\n` +
+                `Consulta inicial: GRATIS\n` +
+                `Honorarios: Según el trámite\n\n` +
+                `📍 *¿Quieres agendar una cita?*\n` +
+                `Escribe "CITA" o llámanos al:\n` +
+                `📱 +52 477 724 4259`;
+            
+            await simulateTyping(chat, 2);
+            await message.reply(respuestaFamiliar);
+            conversationManager.logMessage(userPhoneId, despachoNombre, respuestaFamiliar, false);
+            
+            return;
+        }
+        
+        // CASO ESPECIAL: Usuario seleccionó OPCIÓN 04 - CONTRATOS CIVILES
+        if (menuOption === '04' || menuOption === '4' || detectedIntent === 'contratos_civiles') {
+            console.log('📄 Opción 04: CONTRATOS CIVILES - Enviando respuesta específica');
+            
+            const respuestaContratos = `📄 *CONTRATOS CIVILES*\n\n` +
+                `Te ayudamos con:\n\n` +
+                `📋 *SERVICIOS:*\n` +
+                `• Elaboración de contratos\n` +
+                `• Compraventa de inmuebles\n` +
+                `• Arrendamiento\n` +
+                `• Contratos mercantiles\n` +
+                `• Revisión de documentos\n` +
+                `• Juicios civiles\n\n` +
+                `💰 *INVERSIÓN:*\n` +
+                `Consulta inicial: GRATIS\n` +
+                `Honorarios: Según el servicio\n\n` +
+                `📍 *¿Quieres agendar una cita?*\n` +
+                `Escribe "CITA" o llámanos al:\n` +
+                `📱 +52 477 724 4259`;
+            
+            await simulateTyping(chat, 2);
+            await message.reply(respuestaContratos);
+            conversationManager.logMessage(userPhoneId, despachoNombre, respuestaContratos, false);
+            
+            return;
         }
         
         // CASO NORMAL: Generar respuesta con IA

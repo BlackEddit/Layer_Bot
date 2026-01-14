@@ -81,28 +81,33 @@ Aquí está el texto extraído de una foto de multa:
 
 ${textoCompleto}
 
-Extrae TODOS estos datos y responde en formato JSON con esta estructura EXACTA:
+Extrae TODOS estos datos con MÁXIMA precisión y responde en formato JSON con esta estructura EXACTA:
 {
-  "nombre_infraccionado": "nombre completo del infraccionado",
-  "folio": "número de folio o boleta",
-  "fecha_infraccion": "fecha de la infracción (DD/MM/YYYY)",
+  "nombreInfractor": "nombre completo del infraccionado/propietario del vehículo",
+  "folio": "número de folio, boleta o número de infracción",
+  "fechaInfraccion": "fecha de la infracción en formato DD/MM/YYYY",
   "placas": "placas del vehículo",
-  "marca": "marca del vehículo",
-  "linea": "línea/modelo del vehículo",
-  "nombre_policia": "nombre completo del policía vial",
-  "numero_identificacion": "número de identificación del policía",
-  "delegacion": "delegación o zona",
-  "turno": "turno del oficial",
-  "sector": "sector donde ocurrió la infracción",
-  "fecha_conocimiento": "fecha en que se conoce la multa",
-  "hora": "hora de la infracción",
-  "lugar": "calle, colonia, municipio completo",
-  "tipo_infraccion": "descripción de la infracción",
-  "articulo": "artículo o fundamento legal",
-  "monto": "cantidad a pagar en pesos"
+  "marca": "marca del vehículo (ej: NISSAN, HONDA, TOYOTA)",
+  "linea": "línea/modelo del vehículo (ej: SENTRA, CIVIC, COROLLA)",
+  "nombreOficial": "nombre completo del policía vial o agente que emitió la multa",
+  "idOficial": "número de identificación, placa o empleado del policía",
+  "delegacion": "delegación, dirección o corporación (ej: DIRECCIÓN DE POLICÍA VIAL)",
+  "turno": "turno del oficial (ej: PRIMER TURNO, SEGUNDO TURNO, MATUTINO, VESPERTINO)",
+  "sector": "sector, zona o región donde ocurrió (ej: SECTOR 1, ZONA NORTE)",
+  "hora": "hora exacta de la infracción (formato 24hrs: HH:MM)",
+  "lugar": "ubicación completa: calle, número, colonia, municipio",
+  "tipoInfraccion": "descripción exacta de la infracción cometida",
+  "articulo": "artículo, fracción e inciso del reglamento infringido",
+  "monto": "cantidad exacta a pagar (solo número, ej: 2500)"
 }
 
-IMPORTANTE: Si algún dato NO aparece en el texto, pon "No especificado".
+INSTRUCCIONES CRÍTICAS:
+- Extrae el texto EXACTO que aparece en la multa
+- No inventes información que no esté en el texto
+- Si un dato NO aparece, pon "No especificado"
+- Para fechas, convierte al formato DD/MM/YYYY
+- Para el monto, pon solo el número sin símbolos
+
 Responde SOLO con el JSON, sin texto adicional.`;
 
             const response = await this.groq.chat.completions.create({
@@ -125,21 +130,20 @@ Responde SOLO con el JSON, sin texto adicional.`;
         } catch (error) {
             console.error('❌ Error interpretando texto:', error.message);
             return {
-                nombre_infraccionado: "No especificado",
+                nombreInfractor: "No especificado",
                 folio: "No especificado",
-                fecha_infraccion: "No especificado",
+                fechaInfraccion: "No especificado",
                 placas: "No especificado",
                 marca: "No especificado",
                 linea: "No especificado",
-                nombre_policia: "No especificado",
-                numero_identificacion: "No especificado",
+                nombreOficial: "No especificado",
+                idOficial: "No especificado",
                 delegacion: "No especificado",
                 turno: "No especificado",
                 sector: "No especificado",
-                fecha_conocimiento: "No especificado",
                 hora: "No especificado",
                 lugar: "No especificado",
-                tipo_infraccion: "No especificado",
+                tipoInfraccion: "No especificado",
                 articulo: "No especificado",
                 monto: "No especificado",
                 error_interpretacion: error.message
@@ -153,9 +157,9 @@ Responde SOLO con el JSON, sin texto adicional.`;
     generarMensajeWhatsApp(datos) {
         // Contar cuántos campos se obtuvieron
         const camposRequeridos = [
-            'nombre_infraccionado', 'folio', 'fecha_infraccion', 'placas', 
-            'marca', 'linea', 'nombre_policia', 'numero_identificacion',
-            'delegacion', 'turno', 'sector', 'fecha_conocimiento'
+            'nombreInfractor', 'folio', 'fechaInfraccion', 'placas', 
+            'marca', 'linea', 'nombreOficial', 'idOficial',
+            'delegacion', 'turno', 'sector', 'hora', 'lugar'
         ];
         
         const camposObtenidos = camposRequeridos.filter(campo => 
@@ -164,41 +168,44 @@ Responde SOLO con el JSON, sin texto adicional.`;
         
         const porcentajeCompletado = Math.round((camposObtenidos / camposRequeridos.length) * 100);
 
-        return `📋 *ANÁLISIS DE MULTA*
+        return `📋 *ANÁLISIS COMPLETO DE MULTA*
 
 👤 *INFRACCIONADO*
-   Nombre: ${datos.nombre_infraccionado}
+   Nombre: ${datos.nombreInfractor}
 
 📌 *DATOS DE LA INFRACCIÓN*
-   Folio: ${datos.folio}
-   Fecha infracción: ${datos.fecha_infraccion}
-   Hora: ${datos.hora}
+   📋 Folio: ${datos.folio}
+   📅 Fecha: ${datos.fechaInfraccion}
+   🕐 Hora: ${datos.hora}
    📍 Lugar: ${datos.lugar}
 
 🚗 *VEHÍCULO*
-   Placas: ${datos.placas}
-   Marca: ${datos.marca}
-   Línea: ${datos.linea}
+   🔖 Placas: ${datos.placas}
+   🚘 Marca: ${datos.marca}
+   📝 Línea: ${datos.linea}
 
-👮 *OFICIAL*
-   Nombre: ${datos.nombre_policia}
-   ID: ${datos.numero_identificacion}
-   Delegación: ${datos.delegacion}
-   Turno: ${datos.turno}
-   Sector: ${datos.sector}
+👮 *AGENTE VIAL*
+   👤 Nombre: ${datos.nombreOficial}
+   🆔 ID/Empleado: ${datos.idOficial}
+   🏢 Delegación: ${datos.delegacion}
+   ⏰ Turno: ${datos.turno}
+   📍 Sector: ${datos.sector}
 
-⚠️ *INFRACCIÓN*
-   ${datos.tipo_infraccion}
-   📖 Artículo: ${datos.articulo}
-   💰 Monto: ${datos.monto}
-
-📅 *Fecha conocimiento:* ${datos.fecha_conocimiento}
+⚠️ *INFRACCIÓN COMETIDA*
+   ${datos.tipoInfraccion}
+   📖 Fundamento: ${datos.articulo}
+   💰 Monto: $${datos.monto}
 
 ━━━━━━━━━━━━━━━━━━━━
-📊 Datos obtenidos: ${camposObtenidos}/12 campos (${porcentajeCompletado}%)
-✅ Analizado con Google Vision (95% precisión)
+✅ Precisión: ${porcentajeCompletado}% (${camposObtenidos}/${camposRequeridos.length} campos)
+📸 Analizado con Google Vision AI
 
-¿Quieres que impugne esta multa? Tenemos 97% de éxito por $2,500 MXN.`;
+🎯 *¿QUIERES IMPUGNARLA?*
+💰 Inversión: $2,500 MXN
+📊 Éxito: 97% (330/340 casos ganados)
+⏱️ Tiempo: 4-6 meses
+
+Responde *SÍ* para proceder con la demanda.`;
     }
 }
 
